@@ -3,34 +3,48 @@ from Routine_config import ConfigurationRoutineJeu
 
 class AutomationJeu:
     def __init__(self):
+        print("[INFO] Initialisation du bot...")
         # Positions des jeux
         self.position_coinclick = ConfigurationRoutineJeu.POSITION_COINCLICK()
         self.position_memory = ConfigurationRoutineJeu.POSITION_MEMORY()
         self.position_jeu2048 = ConfigurationRoutineJeu.POSITION_JEU2048()
         self.banniere_evenement = ConfigurationRoutineJeu.BANNIERE_EVENEMENT
         self.niveau_memory = ConfigurationRoutineJeu.NIVEAU_MEMORY
+        print("[INFO] Configuration chargée avec succès")
         
     def attendre_jeu_pret(self, position_jeu):
         """
         Attend que le jeu soit prêt, avec plusieurs tentatives
         """
         max_tentatives = 1
+        print(f"[INFO] Vérification de l'état du jeu à la position {position_jeu}")
+        
         for tentative in range(max_tentatives):
             try:
+                print(f"[DEBUG] Tentative {tentative + 1}/{max_tentatives}")
                 deplacer_souris(position_jeu[0], position_jeu[1])
                 capture_avant = pyautogui.screenshot()
+                print("[DEBUG] Capture d'écran avant le clic")
+                
                 clic(position_jeu[0], position_jeu[1])
+                print(f"[DEBUG] Clic effectué à la position {position_jeu}")
                 sleep(2)
+                
                 capture_apres = pyautogui.screenshot()
+                print("[DEBUG] Capture d'écran après le clic")
                 
                 if not verifier_changement_avance(capture_avant, capture_apres):
-                    print(f"Jeu prêt à la tentative {tentative + 1}")
+                    print(f"[INFO] Jeu prêt à la tentative {tentative + 1}")
                     return True
                 
             except Exception as e:
-                print(f"Erreur lors de la préparation du jeu : {e}")
+                print(f"[ERREUR] Erreur lors de la préparation du jeu : {str(e)}")
+                print(f"[DEBUG] Détails de l'erreur : {type(e).__name__}")
             
+            print(f"[INFO] Attente de 2 secondes avant la prochaine tentative")
             sleep(2)
+        
+        print("[AVERTISSEMENT] Impossible de préparer le jeu après toutes les tentatives")
         return False
 
     def jouer_memory(self):

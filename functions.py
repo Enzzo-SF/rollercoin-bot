@@ -51,30 +51,39 @@ def chercher_position():
     return key
 
 def similarite_image(image1, image2):
-    diff = ImageChops.difference(image1, image2)
-    diff = diff.convert('L')  # Conversion en niveaux de gris
-    histogram = diff.histogram()
-    rms = sum((value * ((idx % 256) ** 2) for idx, value in enumerate(histogram))) / float(image1.size[0] * image1.size[1])
-    return rms ** 0.5
+    """Calcule la similarité entre deux images."""
+    difference = ImageChops.difference(image1, image2)
+    difference_array = np.array(difference)
+    similarite = np.mean(difference_array)
+    print(f"[DEBUG] Similarité calculée : {similarite:.2f}")
+    return similarite
 
 def verifier_changement(capture_avant, capture_apres):
-    # Compare les deux images
-    if ImageChops.difference(capture_avant, capture_apres).getbbox() is None:
-        print("Les images sont identiques, l'action n'a pas causé de changements.")
-        return True
-    else:
-        print("Les images sont différentes, l'action a causé des changements.")
-        return False
+    """Vérifie s'il y a eu un changement significatif entre deux captures."""
+    SEUIL_SIMILARITE = 50.0  # Ajusté pour être plus précis
+    similarite = similarite_image(capture_avant, capture_apres)
+    changement = similarite < SEUIL_SIMILARITE
+    print(f"[DEBUG] Seuil de similarité : {SEUIL_SIMILARITE}")
+    print(f"[INFO] {'Changement détecté' if changement else 'Pas de changement significatif'}")
+    return changement
 
 def verifier_changement_avance(capture_avant, capture_apres):
-    similarite = similarite_image(capture_avant, capture_apres)
-    print("Similarité : ", similarite)
+    """Vérifie les changements avec plus de précision et de logs."""
+    SEUIL_SIMILARITE_MIN = 30.0  # Seuil minimum pour considérer un changement
+    SEUIL_SIMILARITE_MAX = 80.0  # Seuil maximum pour considérer un changement
     
-    if similarite > 6:
-        print("Les images sont différentes, l'action a causé des changements significatifs.")
+    similarite = similarite_image(capture_avant, capture_apres)
+    
+    print(f"[DEBUG] Seuils de similarité : Min={SEUIL_SIMILARITE_MIN:.2f}, Max={SEUIL_SIMILARITE_MAX:.2f}")
+    
+    if similarite < SEUIL_SIMILARITE_MIN:
+        print("[INFO] Changement majeur détecté (forte différence)")
+        return True
+    elif similarite > SEUIL_SIMILARITE_MAX:
+        print("[INFO] Pas de changement significatif (images très similaires)")
         return False
     else:
-        print("Les images sont similaires, l'action a causé des changements minimes ou négligeables.")
+        print("[INFO] Changement modéré détecté")
         return True
 
 def capturer_ecran_jeu():
@@ -105,8 +114,12 @@ def Jeu2048():
     print("Fin du jeu!")
 
 def clic_souris(x, y, attente=0.2):
+    """Effectue un clic à la position spécifiée avec plus de logs."""
+    print(f"[DEBUG] Clic à la position : x={x}, y={y}")
     pyautogui.click(x, y)
-    sleep(attente)
+    if attente > 0:
+        print(f"[DEBUG] Attente de {attente} secondes après le clic")
+        sleep(attente)
 
 def coinclick(a):
     print("DÉBUT DU JEU")
@@ -228,8 +241,8 @@ class BotMemory:
 
 def obtenir_resolution():
     """Obtient la résolution actuelle de l'écran."""
-    import pyautogui
     largeur, hauteur = pyautogui.size()
+    print(f"[INFO] Résolution détectée : {largeur}x{hauteur}")
     return largeur, hauteur
 
 def ajuster_coordonnees(x, y, resolution_base=(1920, 1080)):
@@ -238,4 +251,10 @@ def ajuster_coordonnees(x, y, resolution_base=(1920, 1080)):
     ratio_x = largeur_actuelle / resolution_base[0]
     ratio_y = hauteur_actuelle / resolution_base[1]
     
-    return (int(x * ratio_x), int(y * ratio_y))
+    x_ajuste = int(x * ratio_x)
+    y_ajuste = int(y * ratio_y)
+    
+    print(f"[DEBUG] Ajustement coordonnées : ({x}, {y}) -> ({x_ajuste}, {y_ajuste})")
+    print(f"[DEBUG] Ratios : x={ratio_x:.2f}, y={ratio_y:.2f}")
+    
+    return (x_ajuste, y_ajuste)
