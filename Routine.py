@@ -4,9 +4,9 @@ from Routine_config import ConfigurationRoutineJeu
 class AutomationJeu:
     def __init__(self):
         # Positions des jeux
-        self.position_coinclick = ConfigurationRoutineJeu.POSITION_COINCLICK
-        self.position_memory = ConfigurationRoutineJeu.POSITION_MEMORY
-        self.position_jeu2048 = ConfigurationRoutineJeu.POSITION_JEU2048
+        self.position_coinclick = ConfigurationRoutineJeu.POSITION_COINCLICK()
+        self.position_memory = ConfigurationRoutineJeu.POSITION_MEMORY()
+        self.position_jeu2048 = ConfigurationRoutineJeu.POSITION_JEU2048()
         self.banniere_evenement = ConfigurationRoutineJeu.BANNIERE_EVENEMENT
         self.niveau_memory = ConfigurationRoutineJeu.NIVEAU_MEMORY
         
