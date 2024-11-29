@@ -20,18 +20,25 @@ Bot automatisé pour jouer aux mini-jeux sur RollerCoin.
   - pyautogui
   - Pillow
   - numpy
+- Résolution d'écran :
+  - Fonctionne avec toutes les résolutions (ajustement automatique)
+  - Résolution recommandée : 1366x768 ou supérieure
+- Configuration du navigateur :
+  - Zoom à 100% (Ctrl + 0)
+  - Mode plein écran (F11)
+  - Échelle Windows à 100%
 
 ## Installation
 
 1. Clonez le dépôt :
 ```bash
-git clone https://github.com/votre-nom/rollercoin-bot.git
+git clone https://github.com/Enzzo-SF/rollercoin-bot.git
 cd rollercoin-bot
 ```
 
 2. Installez les dépendances :
 ```bash
-pip install selenium pyautogui Pillow numpy
+pip install -r requirements.txt
 ```
 
 ## Configuration
@@ -44,7 +51,10 @@ Modifiez le fichier `Routine_config.py` pour ajuster :
 ## Utilisation
 
 1. Connectez-vous à RollerCoin dans votre navigateur
-2. Assurez-vous que la fenêtre du navigateur est bien visible
+2. Assurez-vous que :
+   - La fenêtre du navigateur est en plein écran (F11)
+   - Le zoom est à 100% (Ctrl + 0)
+   - L'échelle Windows est à 100%
 3. Lancez le bot :
 ```bash
 python Routine.py
@@ -60,6 +70,19 @@ Pour arrêter le bot, appuyez sur Ctrl+C dans le terminal.
 - `2048Coins.py` : Logique du jeu 2048
 - `CoinClick.py` : Logique du jeu CoinClick
 - `HamsterClimber.py` : Logique du jeu Hamster Climber
+
+## Résolution des problèmes
+
+Si le bot ne clique pas aux bons endroits :
+1. Assurez-vous que le zoom du navigateur est à 100%
+2. Activez le mode plein écran (F11)
+3. Vérifiez l'échelle Windows (doit être à 100%)
+4. Si les clics sont légèrement décalés, vous pouvez ajuster les coordonnées de base dans `Routine_config.py` :
+   ```python
+   _POSITION_BASE_COINCLICK = (1300, 420)  # Modifiez ces valeurs
+   _POSITION_BASE_MEMORY = (600, 1000)     # si nécessaire
+   _POSITION_BASE_JEU2048 = (1300, 850)    # pour votre écran
+   ```
 
 ## Avertissement
 

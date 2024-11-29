@@ -225,3 +225,17 @@ class BotMemory:
         while self.jouer_tour():
             sleep(1)  # Pause entre les tours
         print("Partie terminée !")
+
+def obtenir_resolution():
+    """Obtient la résolution actuelle de l'écran."""
+    import pyautogui
+    largeur, hauteur = pyautogui.size()
+    return largeur, hauteur
+
+def ajuster_coordonnees(x, y, resolution_base=(1920, 1080)):
+    """Ajuste les coordonnées en fonction de la résolution actuelle."""
+    largeur_actuelle, hauteur_actuelle = obtenir_resolution()
+    ratio_x = largeur_actuelle / resolution_base[0]
+    ratio_y = hauteur_actuelle / resolution_base[1]
+    
+    return (int(x * ratio_x), int(y * ratio_y))
